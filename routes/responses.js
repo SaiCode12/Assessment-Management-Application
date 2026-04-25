@@ -113,13 +113,15 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-/* ── GET /api/responses — all ────────────────────────────────────────── */
+
+/* ── GET /api/responses — current user only ─────────────────────────── */
 router.get('/', auth, async (req, res) => {
   try {
-    const responses = await Response.find()
+    const responses = await Response.find({ submittedBy: req.user.id }) // ✅ filter added
       .populate('submittedBy', 'name email')
       .populate('assessmentId', 'title passPercent')
       .sort({ submittedAt: -1 });
+
     res.json(responses);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });

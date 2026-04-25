@@ -19,7 +19,7 @@ router.get('/', auth, async (req, res) => {
 // Get all assessments (for launch pad - all users)
 router.get('/all', auth, async (req, res) => {
   try {
-    const assessments = await Assessment.find()
+    const assessments = await Assessment.find({ createdBy: req.user.id })
       .populate('createdBy', 'name email')
       .sort({ createdAt: -1 });
     res.json(assessments);
